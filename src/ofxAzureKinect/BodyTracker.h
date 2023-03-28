@@ -23,6 +23,8 @@ namespace ofxAzureKinect
 	class BodyTracker
 	{
 	public:
+		BodyTracker() :bTracking(false) {}
+
 		bool startTracking(const k4a::calibration& calibration, BodyTrackerSettings settings = BodyTrackerSettings());
 		bool stopTracking();
 

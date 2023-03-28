@@ -17,17 +17,23 @@ namespace ofxAzureKinect
 		this->trackerConfig.gpu_device_id = settings.gpuDeviceID;
 
 		// Create tracker.
-		k4abt_tracker_create(&calibration, this->trackerConfig, &this->bodyTracker);
+		k4a_result_t result = k4abt_tracker_create(&calibration, this->trackerConfig, &this->bodyTracker);
 
-		// Add joint smoothing parameter listener.
-		this->eventListeners.push(this->jointSmoothing.newListener([this](float&)
+		if (result == K4A_RESULT_SUCCEEDED)
 		{
-			k4abt_tracker_set_temporal_smoothing(this->bodyTracker, this->jointSmoothing);
-		}));
 
-		this->bTracking = true;
-	
-		return true;
+			// Add joint smoothing parameter listener.
+			this->eventListeners.push(this->jointSmoothing.newListener([this](float&)
+				{
+					k4abt_tracker_set_temporal_smoothing(this->bodyTracker, this->jointSmoothing);
+				}));
+
+			this->bTracking = true;
+
+			return true;
+		}
+		else
+			return false;
 	}
 
 	bool BodyTracker::stopTracking()
